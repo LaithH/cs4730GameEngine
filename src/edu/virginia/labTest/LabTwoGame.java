@@ -142,7 +142,7 @@ public class LabTwoGame extends Game {
         g.translate(-xPos, -yPos);
 
         //show health and time
-        g.setColor(Color.MAGENTA);
+        g.setColor(Color.RED);
         g.setFont(new Font("ComicSans", Font.BOLD, 24));
         g.drawString("Health: " + marioHealth, 15, 25);
         g.drawString("Time: " + formatter.format(gameTime), 560, 25);
