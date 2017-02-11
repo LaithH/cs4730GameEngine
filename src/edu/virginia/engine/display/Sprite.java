@@ -20,4 +20,6 @@ public class Sprite extends DisplayObject {
 	public void update(ArrayList<String> pressedKeys) {
 		super.update(pressedKeys);
 	}
+
+
 }

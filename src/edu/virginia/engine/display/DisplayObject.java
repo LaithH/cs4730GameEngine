@@ -1,7 +1,7 @@
 package edu.virginia.engine.display;
 
-import java.awt.Graphics;
-import java.awt.Graphics2D;
+import java.awt.*;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -26,20 +26,23 @@ public class DisplayObject {
 	private boolean visible;
 
 	//x, y position where object will be drawn
-	private Point2D position;
+	private int positionX;
+	private int positionY;
 
 	//Point relative to upper left corner that is the origin of the object
-	private Point2D pivotPoint;
+	private int pivotPointX;
+	private int pivotPointY;
 
 	//scale
-	private double scaleX;
-	private double scaleY;
+	private double scaleX = 1.0;
+	private double scaleY = 1.0;
 
 	//degrees of rotation
 	private int rotation;
 
 	//transparency
-	private double alpha;
+	private double alpha = 1.0;
+	private double prevAlpha;
 
 	/**
 	 * Constructors: can pass in the id OR the id and image's file path and
@@ -47,11 +50,21 @@ public class DisplayObject {
 	 */
 	public DisplayObject(String id) {
 		this.setId(id);
+		this.setScaleX(1.0);
+		this.setScaleY(1.0);
+		this.setAlpha(1.0);
+		this.setRotation(0);
+		this.setVisible(true);
 	}
 
 	public DisplayObject(String id, String fileName) {
 		this.setId(id);
 		this.setImage(fileName);
+		this.setScaleX(1.0);
+		this.setScaleY(1.0);
+		this.setAlpha(1.0);
+		this.setRotation(0);
+		this.setVisible(true);
 	}
 
 	public void setId(String id) {
@@ -98,20 +111,37 @@ public class DisplayObject {
 		this.visible = visible;
 	}
 
-	public Point2D getPosition() {
-		return position;
+
+	public int getPositionX() {
+		return positionX;
 	}
 
-	public void setPosition(Point2D position) {
-		this.position = position;
+	public void setPositionX(int positionX) {
+		this.positionX = positionX;
 	}
 
-	public Point2D getPivotPoint() {
-		return pivotPoint;
+	public int getPositionY() {
+		return positionY;
 	}
 
-	public void setPivotPoint(Point2D pivotPoint) {
-		this.pivotPoint = pivotPoint;
+	public void setPositionY(int positionY) {
+		this.positionY = positionY;
+	}
+
+	public int getPivotPointX() {
+		return pivotPointX;
+	}
+
+	public void setPivotPointX(int pivotPointX) {
+		this.pivotPointX = pivotPointX;
+	}
+
+	public int getPivotPointY() {
+		return pivotPointY;
+	}
+
+	public void setPivotPointY(int pivotPointY) {
+		this.pivotPointY = pivotPointY;
 	}
 
 	public double getScaleX() {
@@ -119,7 +149,15 @@ public class DisplayObject {
 	}
 
 	public void setScaleX(double scaleX) {
-		this.scaleX = scaleX;
+		if(this.getScaleX() < 0.5) {
+			this.scaleX = 0.5;
+		}
+		else if (this.getScaleX() > 2) {
+			this.scaleX = 2;
+		}
+		else{
+			this.scaleX = scaleX;
+		}
 	}
 
 	public double getScaleY() {
@@ -127,7 +165,15 @@ public class DisplayObject {
 	}
 
 	public void setScaleY(double scaleY) {
-		this.scaleY = scaleY;
+		if(this.getScaleY() < 0.5) {
+			this.scaleY = 0.5;
+		}
+		else if (this.getScaleY() > 2) {
+			this.scaleY = 2;
+		}
+		else{
+			this.scaleY = scaleY;
+		}
 	}
 
 	public int getRotation() {
@@ -143,7 +189,15 @@ public class DisplayObject {
 	}
 
 	public void setAlpha(double alpha) {
-		this.alpha = alpha;
+		if(this.getAlpha() < 0.2) {
+			this.alpha = 0.2;
+		}
+		else if (this.getAlpha() > 1) {
+			this.alpha = 1;
+		}
+		else{
+			this.alpha = alpha;
+		}
 	}
 
 
@@ -185,7 +239,7 @@ public class DisplayObject {
 	 * */
 	public void draw(Graphics g) {
 		
-		if (displayImage != null) {
+		if (displayImage != null && this.isVisible() == true) {
 			
 			/*
 			 * Get the graphics and apply this objects transformations
@@ -198,6 +252,8 @@ public class DisplayObject {
 			g2d.drawImage(displayImage, 0, 0,
 					(int) (getUnscaledWidth()),
 					(int) (getUnscaledHeight()), null);
+
+			g2d.drawOval(this.getPivotPointX(), this.getPivotPointY(), 5, 5);
 			
 			/*
 			 * undo the transformations so this doesn't affect other display
@@ -212,7 +268,16 @@ public class DisplayObject {
 	 * object
 	 * */
 	protected void applyTransformations(Graphics2D g2d) {
-	
+		//translate canvas then draw mario then move canvas back
+		g2d.translate(this.getPositionX(), this.getPositionY());
+		g2d.scale(this.getScaleX(), this.getScaleY());
+
+		AffineTransform t = new AffineTransform();
+		t.rotate(Math.toRadians(this.getRotation()), getPivotPointX(), getPivotPointY());
+		g2d.transform(t);
+
+		prevAlpha = this.getAlpha();
+		g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float) this.getAlpha()));
 	}
 
 	/**
@@ -220,7 +285,13 @@ public class DisplayObject {
 	 * object
 	 * */
 	protected void reverseTransformations(Graphics2D g2d) {
+		g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float) prevAlpha));
+		AffineTransform t = new AffineTransform();
+		t.rotate(Math.toRadians(-this.getRotation()), getPivotPointX(), getPivotPointY());
+		g2d.transform(t);
 
+		g2d.scale(1/this.getScaleX(), 1/this.getScaleY());
+		g2d.translate(-this.getPositionX(), -this.getPositionY());
 	}
 
 }
