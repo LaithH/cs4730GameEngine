@@ -16,6 +16,21 @@ public class Sprite extends DisplayObjectContainer {
 		super(id, imageFileName);
 	}
 
+	public Sprite(String id, String fileName, DisplayObjectContainer parent) {
+		super(id, fileName, parent);
+	}
+
+	public Sprite(String id, DisplayObjectContainer parent) {
+		super(id, parent);
+	}
+//
+//	public Sprite(String id, DisplayObjectContainer parent, int posX, int posY) {
+//		super(id, parent);
+//		this.positionX = posX;
+//		this.positionY = posY;
+//	}
+
+
 	@Override
 	public void update(ArrayList<String> pressedKeys) { super.update(pressedKeys); }
 

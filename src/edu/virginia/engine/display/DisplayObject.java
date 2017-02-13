@@ -26,19 +26,19 @@ public class DisplayObject {
 	private boolean visible;
 
 	//x, y position where object will be drawn
-	private int positionX;
-	private int positionY;
+	protected int positionX;
+	protected int positionY;
 
 	//Point relative to upper left corner that is the origin of the object
-	private int pivotPointX;
-	private int pivotPointY;
+	protected int pivotPointX;
+	protected int pivotPointY;
 
 	//scale
 	private double scaleX = 1.0;
 	private double scaleY = 1.0;
 
 	//degrees of rotation
-	private int rotation;
+	private double rotation;
 
 	//transparency
 	private double alpha = 1.0;
@@ -151,11 +151,11 @@ public class DisplayObject {
 	}
 
 	public void setScaleX(double scaleX) {
-		if(this.getScaleX() < 0.5) {
-			this.scaleX = 0.5;
+		if(this.getScaleX() < 0.1) {
+			this.scaleX = 0.1;
 		}
-		else if (this.getScaleX() > 2) {
-			this.scaleX = 2;
+		else if (this.getScaleX() > 20) {
+			this.scaleX = 20;
 		}
 		else{
 			this.scaleX = scaleX;
@@ -167,22 +167,22 @@ public class DisplayObject {
 	}
 
 	public void setScaleY(double scaleY) {
-		if(this.getScaleY() < 0.5) {
-			this.scaleY = 0.5;
+		if(this.getScaleY() < 0.1) {
+			this.scaleY = 0.1;
 		}
-		else if (this.getScaleY() > 2) {
-			this.scaleY = 2;
+		else if (this.getScaleY() > 20) {
+			this.scaleY = 20;
 		}
 		else{
 			this.scaleY = scaleY;
 		}
 	}
 
-	public int getRotation() {
+	public double getRotation() {
 		return rotation;
 	}
 
-	public void setRotation(int rotation) {
+	public void setRotation(double rotation) {
 		this.rotation = rotation;
 	}
 
