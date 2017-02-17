@@ -84,17 +84,17 @@ public class SolarSystem extends Game {
 //            }
 
 // sad attempt at ellipse
-//            if(sun.getRotation() % 360 >= 270 && sun.getRotation() % 360 < 360){
-//                earth.setPositionX( (int)(earth.getPositionX() + 0.025*Math.cos(sun.getRotation())) );
+//            if(sun.getRotation() % 360 >= 0 && sun.getRotation() % 360 < 180){
+//                earth.setPivotPointX( earth.getPivotPointX() - 1 );
 //            }
-//            else if(sun.getRotation() % 360 >= 0 && sun.getRotation() % 360 < 90){
-//                earth.setPositionX( (int)(earth.getPositionX() + 0.025*Math.cos(sun.getRotation())) );
+//            else if(sun.getRotation() % 360 >= 180 && sun.getRotation() % 360 < 360){
+//                earth.setPivotPointX( earth.getPivotPointX() + 1 );
 //            }
 //            else if(sun.getRotation() % 360 >= 90 && sun.getRotation() % 360 < 180){
-//                earth.setPositionX( (int)(earth.getPositionX() + 0.025*Math.cos(sun.getRotation())) );
+//                eSun.setPivotPointX( (int)(eSun.getPivotPointX() + Math.cos(sun.getRotation())) );
 //            }
 //            else if(sun.getRotation() % 360 >= 180 && sun.getRotation() % 360 < 270){
-//                earth.setPositionX( (int)(earth.getPositionX() + 0.025*Math.cos(sun.getRotation())) );
+//                eSun.setPivotPointX( (int)(eSun.getPivotPointX() - Math.cos(sun.getRotation())) );
 //            }
 //            earth.setPositionX(earth.getPositionX() + 1);
 //            System.out.println(sun.getRotation());
