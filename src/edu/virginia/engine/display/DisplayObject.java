@@ -1,8 +1,9 @@
 package edu.virginia.engine.display;
 
+import edu.virginia.engine.events.EventDispatcher;
+
 import java.awt.*;
 import java.awt.geom.AffineTransform;
-import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -14,7 +15,7 @@ import javax.imageio.ImageIO;
  * A very basic display object for a java based gaming engine
  * 
  * */
-public class DisplayObject {
+public class DisplayObject extends EventDispatcher {
 
 	/* All DisplayObject have a unique id */
 	private String id;
@@ -255,7 +256,7 @@ public class DisplayObject {
 					(int) (getUnscaledWidth()),
 					(int) (getUnscaledHeight()), null);
 
-			g2d.drawOval(this.getPivotPointX(), this.getPivotPointY(), 5, 5);
+			//g2d.drawOval(this.getPivotPointX(), this.getPivotPointY(), 5, 5);
 			
 			/*
 			 * undo the transformations so this doesn't affect other display

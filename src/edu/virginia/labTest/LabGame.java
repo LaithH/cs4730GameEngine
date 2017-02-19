@@ -5,7 +5,10 @@ package edu.virginia.labTest;
  */
 
 import edu.virginia.engine.display.AnimatedSprite;
+import edu.virginia.engine.display.CoinSprite;
 import edu.virginia.engine.display.Game;
+import edu.virginia.engine.events.*;
+import edu.virginia.engine.events.Event;
 import edu.virginia.engine.util.GameClock;
 
 import java.awt.*;
@@ -26,6 +29,9 @@ public class LabGame extends Game {
     boolean marioWins = false;
     boolean gameOver = false;
     int frameClock;
+    Event COIN_PICKED_UP = new Event("coinPickedUp", this);
+    CoinSprite coin = new CoinSprite("Coin");
+    QuestManager qm = new QuestManager();
 
 
     /* Create a sprite object for our game. We'll use mario */
@@ -39,9 +45,14 @@ public class LabGame extends Game {
      * */
     public LabGame() {
         super("Lab Test Game", 700, 500);
-        mario.setPositionX(290);
+        mario.setPositionX(100);
         mario.setPositionY(155);
+        coin.setPositionX(450);
+        coin.setPositionY(155);
         frameClock = 0;
+
+        this.addEventListener(coin, "coinPickedUp");
+        this.addEventListener(qm, "coinPickedUp");
     }
 
 
@@ -104,6 +115,7 @@ public class LabGame extends Game {
 
 		/* Make sure mario is not null. Sometimes Swing can auto cause an extra frame to go before everything is initialized */
         if(mario != null) mario.update(pressedKeys);
+        if(coin != null) coin.update(pressedKeys);
 
         frameClock++;
 
@@ -197,6 +209,16 @@ public class LabGame extends Game {
                 mario.setPositionY(mario.getPositionY() - offset);
             }
 
+            if(coin != null &&
+                    coin.getPositionX() > /*(negativeX)**/(mario.getPositionX()) &&
+                    coin.getPositionX() < /*(negativeX)**/(mario.getPositionX() + 95 * mario.getScaleY()) &&
+                    coin.getPositionY() > /*(negativeY)**/(mario.getPositionY() + 20) &&
+                    coin.getPositionY() < /*(negativeY)**/(mario.getPositionY() + 153 * mario.getScaleY()) && marioHealth > 0){
+                this.dispatchEvent(COIN_PICKED_UP);
+                this.removeEventListener(coin, "coinPickedUp");
+                this.removeEventListener(qm, "coinPickedUp");
+            }
+
             gameTime = (62000 - clock.getElapsedTime()) / 1000;
 
             if(mario != null && !mario.isVisible()){
@@ -245,8 +267,9 @@ public class LabGame extends Game {
 //            g.translate(mario.getPositionX(), mario.getPositionY());
 //
             /* Same, just check for null in case a frame gets thrown in before Mario is initialized */
-            if (mario != null && gameTime > 0 && marioHealth > 0){
+            if (gameTime > 0 && marioHealth > 0){
                 mario.draw(g);
+                coin.draw(g);
 //                g.drawImage(mario.getImage(), mario.getPositionX(), mario.getPositionY(),null);
             }
 
